@@ -13,6 +13,7 @@ class IdentificationsController < ApplicationController
   end
 
    def create
+    @identification = Identification.new(params[:identification])
     result = Salesforcewebservices.getResults params[:identification][:userName], params[:identification][:password], params[:identification][:token]
     @successes =  result[:run_tests_response][:result][:successes]
     if result[:run_tests_response][:result][:failures].nil?

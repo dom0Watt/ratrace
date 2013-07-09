@@ -4,7 +4,6 @@ class Salesforcewebservices
   def self.getResults username, password, token
     result = Login.instance.getSessionId(username, password, token)
     wsdlURL = createWsdlUrl result[:server_url]
-    puts wsdlURL
     headers = {'apex:SessionHeader' =>{'apex:sessionId' => result[:session_id]}, 'apex:DebuggingHeader' =>{'apex:debugLevel' => 'Callout', 'apex:categories' => {'apex:category'=>'Callout', 'apex:level'=>'INFO'}}}
     client = Savon.client(
           wsdl: 'app/assets/wsdl/apex.wsdl',
@@ -18,11 +17,7 @@ class Salesforcewebservices
                 message run_tests_request:{ all_tests: :true}
                 
               end
-    data = response.to_hash
-    
-
-
-    
+    data = response.to_hash   
   end
   
 def self.createWsdlUrl serverUrl

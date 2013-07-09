@@ -1,8 +1,10 @@
 <div class="row">
 	<div class="span9 offset1">
-		<h5>Run All Tests Result For : </h5>
+		<h5>Run All Tests Result For : <%= @identification[:userName]%></h5>
 		<p id="notice"><%= notice %></p>
-
+		<br/>
+		<a href="/home" class="btn btn-primary">Home</a>
+		<br/>
 		<table class="table table-bordered">
 		  <tr>
 		    <th>Number Of Test</th>
@@ -59,6 +61,7 @@
 		    <% end %>
 		    </table>
 
-		<%= link_to 'Home', root_path %>
+		
+		<a href="/home" class="btn btn-primary">Home</a>
 	</div>
 </div>
