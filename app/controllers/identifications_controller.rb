@@ -52,6 +52,9 @@ class IdentificationsController < ApplicationController
     overAllAmount / counter
   end  
 
+  def select
+    render 'listClasses'
+  end
 
  
  

@@ -2,3 +2,9 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 @import "bootstrap";
+ #header {
+        background-image: url("assets/ratrace.jpg");
+        background-repeat: no-repeat;
+        background-position: top left;
+        height: 64px;
+      }
