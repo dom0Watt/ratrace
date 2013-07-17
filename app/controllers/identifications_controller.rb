@@ -1,8 +1,6 @@
-
 class IdentificationsController < ApplicationController
-  require 'CodeCoverageItem'
-   # GET /identifications/new
-  # GET /identifications/new.json
+  require 'test_class_item'
+   
   def new
     @identification = Identification.new
 
@@ -13,21 +11,28 @@ class IdentificationsController < ApplicationController
   end
 
    def create
-    @identification = Identification.new(params[:identification])
-    result = Salesforcewebservices.getResults params[:identification][:userName], params[:identification][:password], params[:identification][:token]
-    @successes =  result[:run_tests_response][:result][:successes]
-    if result[:run_tests_response][:result][:failures].nil?
-      @failures = Hash.new 
+    
+    if params[:identification][:selectClass]
+      @testClasses = selectTestClasses params
+      render 'listClasses'
     else
-      @failures = result[:run_tests_response][:result][:failures]
-    end
-    
-    
-    @numberTests = result[:run_tests_response][:result][:num_tests_run]
-    @overAllCodeCoverage = processOverAllCodeCoverage result[:run_tests_response][:result][:code_coverage]
-    @numberFailures = result[:run_tests_response][:result][:num_failures]
-    @totalTime = minutes=(result[:run_tests_response][:result][:total_time].to_i/(1000*60))%60
-    render 'show'
+       @identification = Identification.new(params[:identification])
+      result = Salesforcewebservices.getResults params[:identification][:userName], params[:identification][:password], params[:identification][:token]
+      @successes =  result[:run_tests_response][:result][:successes]
+      if result[:run_tests_response][:result][:failures].nil?
+        @failures = Hash.new 
+      else
+        @failures = result[:run_tests_response][:result][:failures]
+      end
+
+
+      @numberTests = result[:run_tests_response][:result][:num_tests_run]
+      @overAllCodeCoverage = processOverAllCodeCoverage result[:run_tests_response][:result][:code_coverage]
+      @numberFailures = result[:run_tests_response][:result][:num_failures]
+      @totalTime = minutes=(result[:run_tests_response][:result][:total_time].to_i/(1000*60))%60
+      render 'show'
+      
+    end  
   end
 
 
@@ -52,10 +57,27 @@ class IdentificationsController < ApplicationController
     overAllAmount / counter
   end  
 
-  def select
-    render 'listClasses'
+  def selectTestClasses params
+   
+    result = Salesforcewebservices.getAllTestClasses params[:identification][:userName], params[:identification][:password], params[:identification][:token]
+    testClasses = Array.new 
+    testClassesHash =  result[:query_response][:result][:records]
+    testClassesHash.each do |testClass|
+      if isTestClass testClass
+        testClasses.push TestClassItem.new(testClass[:name].to_s, false)
+      end
+    end  
+    testClasses
   end
 
+
+  def isTestClass testClass
+    body = testClass[:body].to_s
+    name = testClass[:name].to_s
+    if (body.include? "@isTest") || (name.include? "Test")
+      true
+    end
+  end  
  
  
 end

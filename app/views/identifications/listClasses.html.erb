@@ -1,0 +1,17 @@
+<div class="span9">
+<h5>Classes with failures</h5>
+<br/>
+<table class="table table-striped table-bordered">
+  <tr>
+    <th></th>
+    <th>Class Name</th>  
+  </tr>
+
+<% @testClasses.each do |testClass| %>
+  <tr>
+    <td><% testClass.isSelected %></td>
+    <td><%= testClass.className %></td>
+   </tr>
+<% end %>
+</table>
+</div>
