@@ -38,7 +38,7 @@ def self.getAllTestClasses username, password, token
           soap_header: headers,
           read_timeout: 6000
     )
-    message = { query_string: 'select name, body from ApexClass'}
+    message = { query_string: 'select name, body from ApexClass order by name'}
     response = client.call(:query, message: message)
     data = response.to_hash 
 end  

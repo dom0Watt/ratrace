@@ -1,5 +1,6 @@
 class IdentificationsController < ApplicationController
   require 'test_class_item'
+  require 'report'
    
   def new
     @identification = Identification.new
@@ -62,8 +63,10 @@ class IdentificationsController < ApplicationController
     result = Salesforcewebservices.getAllTestClasses params[:identification][:userName], params[:identification][:password], params[:identification][:token]
     testClasses = Array.new 
     testClassesHash =  result[:query_response][:result][:records]
+    report = Report.new('my org')
     testClassesHash.each do |testClass|
       if isTestClass testClass
+        report.testClasses.push TestClassItem.new(testClass[:name].to_s, false)
         testClasses.push TestClassItem.new(testClass[:name].to_s, false)
       end
     end  
@@ -74,7 +77,7 @@ class IdentificationsController < ApplicationController
   def isTestClass testClass
     body = testClass[:body].to_s
     name = testClass[:name].to_s
-    if (body.include? "@isTest") || (name.include? "Test")
+    if (body.include? "@isTest") || (body.include? "testMethod") || (name.include? "Test") || (name.include? "test") 
       true
     end
   end  

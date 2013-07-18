@@ -5,3 +5,11 @@ $(document).on "ready", ->
  			$(element).parent().css('background-color', '#dff0d8') 
  		else
  			$(element).parent().css('background-color', '#f2dede')
+
+
+selectAll: ->
+  cells = $("#tableau" > tbody > tr > td)
+  cells.each ->
+    if $(this).hasClass("select")		
+    	$(this).val true 
+
