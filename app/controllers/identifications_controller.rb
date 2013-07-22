@@ -12,8 +12,9 @@ class IdentificationsController < ApplicationController
   end
 
    def create
-    
-    if params[:identification][:selectClass]
+    choice = params[:identification][:selectClass]
+    puts 'choice'+choice
+    if choice == '1'
       @testClasses = selectTestClasses params
       render 'listClasses'
     else
