@@ -13,23 +13,30 @@ class IdentificationsController < ApplicationController
 
    def create
     choice = params[:identification][:selectClass]
-    puts 'choice'+choice
     if choice == '1'
       @testClasses = selectTestClasses params
       render 'listClasses'
     else
-       @identification = Identification.new(params[:identification])
+      @identification = Identification.new(params[:identification])
       result = Salesforcewebservices.getResults params[:identification][:userName], params[:identification][:password], params[:identification][:token]
       @successes =  result[:run_tests_response][:result][:successes]
+      
       if result[:run_tests_response][:result][:failures].nil?
         @failures = Hash.new 
       else
         @failures = result[:run_tests_response][:result][:failures]
       end
-
-
+      
       @numberTests = result[:run_tests_response][:result][:num_tests_run]
-      @overAllCodeCoverage = processOverAllCodeCoverage result[:run_tests_response][:result][:code_coverage]
+            
+      if result[:run_tests_response][:result][:code_coverage].nil?
+         @overAllCodeCoverage = Hash.new
+      else
+        @overAllCodeCoverage = processOverAllCodeCoverage result[:run_tests_response][:result][:code_coverage]
+      end
+      
+      
+
       @numberFailures = result[:run_tests_response][:result][:num_failures]
       @totalTime = minutes=(result[:run_tests_response][:result][:total_time].to_i/(1000*60))%60
       render 'show'
@@ -39,6 +46,7 @@ class IdentificationsController < ApplicationController
 
 
   def processOverAllCodeCoverage codeCoverages
+    puts codeCoverages
     overAllAmount = 0;
     overAllLines = 0;
     @codeCoverage = Hash.new
