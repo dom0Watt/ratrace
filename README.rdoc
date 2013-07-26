@@ -4,11 +4,11 @@ Rat Race allows you to run All Test on a salesforce organisation.
 
 INSTALL :
 ===================================================================================
-1- Pull the repo
-2- run bundle install
-3- run rake db:migrate
-4- run rails server thin
-5- go to your favorite browser => Localhost:3000
+- Pull the repo
+- run bundle install
+- run rake db:migrate
+- run rails server thin
+- go to your favorite browser => Localhost:3000
 
 
 
