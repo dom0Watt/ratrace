@@ -12,6 +12,13 @@ class IdentificationsController < ApplicationController
   end
 
    def create
+    @successes = Hash.new
+    @failures = Hash.new
+    @numberTests = Hash.new
+    @overAllCodeCoverage = Hash.new
+    @numberFailures = Hash.new
+    @totalTime = 0
+    @codeCoverage = Hash.new
     choice = params[:identification][:selectClass]
     if choice == '1'
       @testClasses = selectTestClasses params
@@ -19,26 +26,19 @@ class IdentificationsController < ApplicationController
     else
       @identification = Identification.new(params[:identification])
       result = Salesforcewebservices.getResults params[:identification][:userName], params[:identification][:password], params[:identification][:token]
-      @successes =  result[:run_tests_response][:result][:successes]
+      @successes =  result[:run_tests_response][:result][:successes] if !result[:run_tests_response][:result][:successes].nil?
+           
+      @failures = result[:run_tests_response][:result][:failures] if !result[:run_tests_response][:result][:failures].nil?
       
-      if result[:run_tests_response][:result][:failures].nil?
-        @failures = Hash.new 
-      else
-        @failures = result[:run_tests_response][:result][:failures]
-      end
       
-      @numberTests = result[:run_tests_response][:result][:num_tests_run]
+      @numberTests = result[:run_tests_response][:result][:num_tests_run] if !result[:run_tests_response][:result][:num_tests_run].nil?
             
-      if result[:run_tests_response][:result][:code_coverage].nil?
-         @overAllCodeCoverage = Hash.new
-      else
+      if !result[:run_tests_response][:result][:code_coverage].nil?
         @overAllCodeCoverage = processOverAllCodeCoverage result[:run_tests_response][:result][:code_coverage]
       end
       
-      
-
-      @numberFailures = result[:run_tests_response][:result][:num_failures]
-      @totalTime = minutes=(result[:run_tests_response][:result][:total_time].to_i/(1000*60))%60
+      @numberFailures = result[:run_tests_response][:result][:num_failures] if !result[:run_tests_response][:result][:num_failures].nil?
+      @totalTime = (result[:run_tests_response][:result][:total_time].to_i/(1000*60))%60 if !result[:run_tests_response][:result][:total_time].nil?
       render 'show'
       
     end  
