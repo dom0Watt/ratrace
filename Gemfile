@@ -7,9 +7,10 @@ gem 'savon', '~> 2.0'
 gem 'thin'
 gem 'therubyracer'
 gem 'jquery-rails'
+gem 'unicorn'
 
 group :production do
-  gem 'pg', '~> 0.15.1'
+  #gem 'pg', '~> 0.15.1'
   gem 'thin' 
 end
 
